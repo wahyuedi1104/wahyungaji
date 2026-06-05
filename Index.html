@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WahyuNgaji - Premium Muslim Hub</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome (Untuk Icon Spinner Loading) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* RESET & BASE */
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+        
+        /* BACKGROUND PREMIUM: Dark Emerald dengan Pola Titik */
+        body { 
+            display: flex; height: 100vh; overflow: hidden; 
+            background-color: #020617; color: #f8fafc; 
+            background-image: radial-gradient(rgba(16, 185, 129, 0.1) 1px, transparent 1px);
+            background-size: 30px 30px;
+        }
+        
+        /* ORBS GLOWING DI BACKGROUND */
+        body::before { content: ''; position: fixed; top: -20%; left: -10%; width: 50vw; height: 50vw; background: radial-gradient(circle, rgba(16, 185, 129, 0.08) 0%, rgba(0,0,0,0) 70%); z-index: -1; filter: blur(60px); }
+        body::after { content: ''; position: fixed; bottom: -20%; right: -10%; width: 40vw; height: 40vw; background: radial-gradient(circle, rgba(14, 165, 233, 0.05) 0%, rgba(0,0,0,0) 70%); z-index: -1; filter: blur(60px); }
+
+        .app-container { display: flex; width: 100vw; height: 100vh; position: relative; }
+        
+        /* PRELOADER LAFAZ ALLAH (CENTER FIXED) */
+        #preloader { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: #020617; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; transition: opacity 0.6s ease; }
+        .loader-wrapper { position: relative; width: 130px; height: 130px; display: flex; justify-content: center; align-items: center; }
+        .loading-ring { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 4px solid rgba(255, 255, 255, 0.03); border-radius: 50%; border-top: 4px solid #10b981; border-right: 4px solid #059669; animation: spinRing 1s infinite linear; }
+        .allah-center { position: relative; font-family: 'Amiri', serif; font-size: 54px; color: #ffffff; text-shadow: 0 0 25px rgba(16, 185, 129, 0.8); z-index: 2; animation: pulseGlow 2s infinite ease-in-out; line-height: 1; padding-top: 12px; margin-left: 2px; }
+        .loader-text { color: #10b981; font-size: 14px; font-weight: 800; letter-spacing: 3px; text-transform: uppercase; margin-top: 25px; animation: pulseText 1.5s infinite; }
+        
+        @keyframes spinRing { 100% { transform: rotate(360deg); } }
+        @keyframes pulseGlow { 50% { transform: scale(1.1); text-shadow: 0 0 40px rgba(16, 185, 129, 1); } }
+        @keyframes pulseText { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
+        
+        /* SIDEBAR GLASSMORPHISM (DENGAN FITUR HIDE) */
+        aside { 
+            width: 280px; 
+            background: rgba(15, 23, 42, 0.6); 
+            backdrop-filter: blur(20px);
+            border-right: 1px solid rgba(255,255,255,0.05); 
+            flex-shrink: 0; display: flex; flex-direction: column; justify-content: space-between; padding: 24px; z-index: 10; 
+            transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            margin-left: 0; 
+        }
+        aside.hide-desktop { margin-left: -280px; } /* Class untuk hide di Desktop */
+
+        .brand { border-bottom: 1px dashed rgba(255,255,255,0.1); padding-bottom: 20px; margin-bottom: 24px; text-align: center; }
+        .brand h1 { color: #ffffff; font-size: 26px; font-weight: 800; letter-spacing: -0.5px; text-shadow: 0 0 15px rgba(16, 185, 129, 0.4); }
+        .brand p { color: #10b981; font-size: 11px; font-weight: 700; text-align: center; margin-top: 4px; text-transform: uppercase; letter-spacing: 2px; }
+        
+        .menu-title { font-size: 11px; text-transform: uppercase; color: #64748b; font-weight: 800; margin-bottom: 12px; letter-spacing: 1px; }
+        nav { overflow-y: auto; flex-grow: 1; }
+        nav::-webkit-scrollbar { width: 4px; } nav::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
+        
+        nav button { width: 100%; background: transparent; border: 1px solid transparent; text-align: left; padding: 14px 16px; color: #94a3b8; font-weight: 600; cursor: pointer; border-radius: 12px; margin-bottom: 8px; transition: 0.3s; font-size: 14px; }
+        nav button:hover { background: rgba(255,255,255,0.03); color: #f8fafc; border-color: rgba(255,255,255,0.05); transform: translateX(4px); }
+        nav button.active { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: #ffffff; box-shadow: 0 10px 20px rgba(16, 185, 129, 0.3); font-weight: 700; border-color: transparent; }
+        
+        .footer-sidebar { font-size: 11px; color: #475569; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 15px; text-align: center; font-weight: 600; }
+        
+        /* AREA KONTEN UTAMA */
+        .main-content { flex-grow: 1; display: flex; flex-direction: column; overflow: hidden; position: relative; }
+        
+        /* HEADER GLASSMORPHISM */
+        header { height: 75px; background: rgba(2, 6, 23, 0.7); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; padding: 0 40px; flex-shrink:0; z-index: 5; }
+        .breadcrumb { font-size: 14px; color: #64748b; font-weight: 600; letter-spacing: 0.5px; }
+        .breadcrumb span { color: #f8fafc; font-weight: 800; }
+        
+        /* TOMBOL MENU STANDBY */
+        .toggle-btn { display: block; background: rgba(16, 185, 129, 0.2); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.4); padding: 8px 16px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .toggle-btn:hover { background: #10b981; color: #fff; }
+        
+        .viewport-render { flex-grow: 1; overflow-y: auto; padding: 40px; }
+        .viewport-render::-webkit-scrollbar { width: 6px; } .viewport-render::-webkit-scrollbar-thumb { background: rgba(16, 185, 129, 0.3); border-radius: 6px; }
+
+        /* GRID MENU UMUM */
+        .grid-menu { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 24px; }
+        .item-box { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(10px); padding: 24px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.05); cursor: pointer; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        .item-box:hover { transform: translateY(-8px); border-color: rgba(16, 185, 129, 0.5); box-shadow: 0 20px 40px rgba(16, 185, 129, 0.15); background: rgba(15, 23, 42, 0.95); }
+
+        /* TAMPILAN DATA ARAB & TERJEMAHAN */
+        .data-list-item { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(10px); padding: 30px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .arabic-text { font-family: 'Amiri', serif; font-size: 34px; text-align: right; margin: 20px 0; color: #10b981; line-height: 2.2; direction: rtl; text-shadow: 0 2px 5px rgba(0,0,0,0.5); font-weight: bold; }
+        .latin-text { font-size: 15px; color: #38bdf8; font-style: italic; margin-bottom: 12px; font-weight: 600; }
+        .translation-text { font-size: 14px; color: #cbd5e1; background: rgba(2, 6, 23, 0.5); padding: 16px; border-radius: 12px; border-left: 4px solid #10b981; line-height: 1.7; }
+        
+        /* KONTROL INPUT FORM & BUTTON */
+        input.form-input { width: 100%; padding: 14px; font-size: 14px; border-radius: 12px; border: 1px solid #334155; background: #1e293b; color: #f8fafc; margin-bottom: 15px; outline: none; transition: 0.3s; }
+        input.form-input:focus { border-color: #10b981; box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1); }
+
+        /* RESPONSIVE HP */
+        @media(max-width: 768px) { 
+            aside { position: absolute; transform: translateX(-100%); height: 100%; box-shadow: none; background: #0f172a; margin-left: 0; } 
+            aside.open { transform: translateX(0); box-shadow: 20px 0 50px rgba(0,0,0,0.9); } 
+            header { padding: 0 20px; } 
+            .viewport-render { padding: 20px; } 
+        }
+    </style>
+</head>
+<body>
+    <!-- PRELOADER LAYAR AWAL -->
+    <div id="preloader">
+        <div class="loader-wrapper">
+            <div class="loading-ring"></div>
+            <div class="allah-center">الله</div>
+        </div>
+        <div class="loader-text">Menyiapkan Berkah...</div>
+    </div>
+
+    <div class="app-container">
+        <!-- SIDEBAR MENU KIRI -->
+        <aside id="sidebar">
+            <div>
+                <div class="brand">
+                    <h1>WahyuNgaji</h1>
+                    <p>Digital Hub Muslim</p>
+                </div>
+                <div class="menu-title">Menu Ibadah</div>
+                <nav id="sidebar-nav">
+                    <button onclick="pindahTab('beranda')" id="m-beranda" class="active">🏠 Beranda</button>
+                    <button onclick="pindahTab('alquran')" id="m-alquran">📖 Al-Qur'an Digital</button>
+                    <button onclick="pindahTab('wudhu')" id="m-wudhu">💧 Panduan Wudhu</button>
+                    <button onclick="pindahTab('shalat')" id="m-shalat">🧎 Panduan Shalat</button>
+                    <button onclick="pindahTab('kisah_nabi')" id="m-kisah_nabi">🐪 Kisah 25 Nabi</button>
+                    <button onclick="pindahTab('zakat')" id="m-zakat">🪙 Kalkulator Zakat</button>
+                    <button onclick="pindahTab('kalender')" id="m-kalender">📅 Kalender Hijriah</button>
+                    <button onclick="pindahTab('doa')" id="m-doa">🙏 Doa Harian</button>
+                    <button onclick="pindahTab('jadwal')" id="m-jadwal">📍 Jadwal Shalat</button>
+                    <button onclick="pindahTab('asmaul')" id="m-asmaul">✨ Asmaul Husna</button>
+                </nav>
+            </div>
+            <div class="footer-sidebar">WES Premium Edition v18.0</div>
+        </aside>
+
+        <!-- KONTEN DINAMIS KANAN -->
+        <div class="main-content">
+            <header>
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <button class="toggle-btn" onclick="toggleMenu()">☰ Menu</button>
+                    <div class="breadcrumb">WahyuNgaji <span style="margin: 0 10px; color:#475569;">/</span> <span id="nama-halaman">Beranda</span></div>
+                </div>
+            </header>
+            <main class="viewport-render" id="render-target">
+                <!-- Tampilan dari JS akan dimasukkan ke sini -->
+            </main>
+        </div>
+    </div>
+
+    <!-- 
+    ========================================================
+    DAFTAR PEMANGGILAN SCRIPT JAVASCRIPT MODULAR
+    ========================================================
+    -->
+    <script src="menu_wudhu.js"></script>
+    <script src="menu_doa.js"></script>
+    <script src="menu_zakat.js"></script>
+    <script src="menu_jadwal.js"></script>
+    <script src="menu_kisah_nabi.js"></script>
+    <script src="menu_asmaul.js"></script>
+    <script src="menu_kalender.js"></script>
+    <script src="menu_shalat.js"></script>
+    <script src="menu_alquran.js"></script>
+
+    <!-- FILE APP.JS INI WAJIB BERADA DI URUTAN PALING BAWAH SEKALI -->
+    <script src="app.js"></script> 
+</body>
+</html>
