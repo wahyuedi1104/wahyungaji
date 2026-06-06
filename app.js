@@ -24,7 +24,36 @@ function toggleMenu() {
 // ==========================================
 // 2. ROUTER & NAVIGASI MENU (OTAK UTAMA)
 // ==========================================
-function pindahTab(namaTab) {
+
+// Variabel untuk menyimpan "ingatan" halaman (Fitur Back)
+let tabHistory = [];
+let currentTab = '';
+
+function goBack() {
+    if (tabHistory.length > 0) {
+        const prevTab = tabHistory.pop(); // Ambil halaman sebelumnya dari ingatan
+        pindahTab(prevTab, true); // Pindah ke halaman itu, isBack = true
+    }
+}
+
+function pindahTab(namaTab, isBack = false) {
+    // Logika History: Catat halaman sebelum pindah (selama bukan hasil klik tombol back)
+    if (!isBack && currentTab !== '' && currentTab !== namaTab) {
+        tabHistory.push(currentTab);
+    }
+    currentTab = namaTab;
+
+    // Atur visibilitas tombol Back (Muncul kalau ada history)
+    const btnBack = document.getElementById('btn-back');
+    if (btnBack) {
+        if (tabHistory.length > 0) {
+            btnBack.style.display = 'block';
+        } else {
+            btnBack.style.display = 'none';
+        }
+    }
+
+    // Tutup otomatis sidebar kalau di HP
     if (window.innerWidth <= 768) {
         document.getElementById('sidebar').classList.remove('open');
     }
@@ -43,7 +72,7 @@ function pindahTab(namaTab) {
     const target = document.getElementById('render-target');
 
     // ==========================================
-    // TAMPILAN HALAMAN BERANDA (GAMBAR LOKAL)
+    // TAMPILAN HALAMAN BERANDA
     // ==========================================
     if (namaTab === 'beranda') {
         target.innerHTML = `
@@ -56,8 +85,8 @@ function pindahTab(namaTab) {
             </style>
 
             <div style="position:relative; overflow:hidden; border-radius: 24px; margin-bottom: 30px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 20px 40px rgba(0,0,0,0.4); min-height: 250px; display:flex; align-items:center;">
-                <!-- Hero Banner -->
-                <img src="https://images.pexels.com/photos/3379051/pexels-photo-3379051.jpeg?auto=compress&cs=tinysrgb&w=1200" style="position:absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; opacity:0.4; z-index:0;">
+                <!-- Hero Banner Baru -->
+                <img src="gambar/saudara.jpg" style="position:absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; opacity:0.4; z-index:0;">
                 <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:linear-gradient(to right, #020617 20%, transparent); z-index:1;"></div>
                 
                 <div style="position:relative; z-index:2; padding: 40px;">
