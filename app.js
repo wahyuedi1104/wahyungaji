@@ -9,6 +9,9 @@ window.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => loader.remove(), 600); 
         }
     }, 1800);
+    
+    // Panggil render pertama kali saat web dibuka
+    renderHalaman();
 });
 
 // LOGIKA SIDEBAR PINTAR (DESKTOP BISA DI-HIDE, HP BISA DI-SLIDE)
@@ -25,39 +28,26 @@ function toggleMenu() {
 // 2. ROUTER & NAVIGASI MENU (OTAK UTAMA)
 // ==========================================
 
-// Variabel untuk menyimpan "ingatan" halaman (Fitur Back)
-let tabHistory = [];
-let currentTab = '';
-
-function goBack() {
-    if (tabHistory.length > 0) {
-        const prevTab = tabHistory.pop(); // Ambil halaman sebelumnya dari ingatan
-        pindahTab(prevTab, true); // Pindah ke halaman itu, isBack = true
-    }
-}
-
-function pindahTab(namaTab, isBack = false) {
-    // Logika History: Catat halaman sebelum pindah (selama bukan hasil klik tombol back)
-    if (!isBack && currentTab !== '' && currentTab !== namaTab) {
-        tabHistory.push(currentTab);
-    }
-    currentTab = namaTab;
-
-    // Atur visibilitas tombol Back (Muncul kalau ada history)
-    const btnBack = document.getElementById('btn-back');
-    if (btnBack) {
-        if (tabHistory.length > 0) {
-            btnBack.style.display = 'block';
-        } else {
-            btnBack.style.display = 'none';
-        }
-    }
-
-    // Tutup otomatis sidebar kalau di HP
+// Fungsi ini dipanggil pas tombol menu diklik. 
+// Tugasnya cuma ngubah URL (nambahin #). 
+function pindahTab(namaTab) {
     if (window.innerWidth <= 768) {
         document.getElementById('sidebar').classList.remove('open');
     }
+    // Mengubah URL otomatis memicu fitur renderHalaman() via 'hashchange'
+    window.location.hash = namaTab;
+}
+
+// Fungsi ini mendeteksi perubahan URL (termasuk saat tombol BACK di HP/Browser ditekan)
+function renderHalaman() {
+    // Ambil nama tab dari URL (buang tanda #)
+    let namaTab = window.location.hash.replace('#', '');
     
+    // Kalau URL kosong (baru buka web), default ke beranda
+    if (!namaTab) {
+        namaTab = 'beranda';
+    }
+
     const judulMap = {
         'beranda': 'Dashboard Utama', 'alquran': "Al-Qur'an Digital", 'wudhu': 'Panduan Wudhu',
         'shalat': 'Panduan Shalat', 'kisah_nabi': 'Kisah 25 Nabi', 'zakat': 'Kalkulator Zakat',
@@ -192,5 +182,5 @@ function pindahTab(namaTab, isBack = false) {
     }
 }
 
-// JALANKAN SAAT WEB PERTAMA KALI DIBUKA
-pindahTab('beranda');
+// EVENT LISTENER BROWSER BACK BUTTON
+window.addEventListener('hashchange', renderHalaman);
